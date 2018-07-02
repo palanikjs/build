@@ -1,0 +1,22 @@
+{
+  "name": "d8build",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/palanik987/build.git"
+  },
+  "author": "palani",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/palanik987/build/issues"
+  },
+  "homepage": "https://github.com/palanik987/build#readme",
+  "dependencies": {
+    "yargs": "^12.0.1"
+  }
+}
