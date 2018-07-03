@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 
-const getJs = (files) => {
+const getJs = (files,dirname) => {
     var dir = {
         path: '',
         chunks: [],
@@ -36,20 +36,21 @@ const getJs = (files) => {
         dir.valid = false;
         dir.error = 'Unmet chunks count';
     }
-    module.exports = dir;
-    return dir;
+    module.exports[dirname]= dir;
 };
 fs.readdir(args.dest, (err, files) => {
     if(err){
         console.log(`Destination path - ${args.dest} - is invalid`);
     }else{
-        console.log(getJs(files,'destination').error);
+        getJs(files,'destination');
+        console.log(`dest done`);
     }
 });
 fs.readdir(args.src, (err, files) => {
     if(err){
         console.log(`Source path - ${args.src} - is invalid`);
     }else{
-        console.log(getJs(files,'source').error);
+        getJs(files,'source');
+        console.log(`source done`);
     }
 });
