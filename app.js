@@ -46,7 +46,7 @@ const getJs = (files,dirName,chunks = 10) => {
 var source = getJs(fs.readdirSync(args.src),args.src,args.chunks);
 var destination = getJs(fs.readdirSync(args.dest),args.dest,args.chunks);
 
-if(source.valid && destination.valid){
+if((source.valid && destination.valid)&&(source.chunks.length == destination.chunks.length)){
 
     for (var i = 0;i<destination.chunks.length;i++){
         fs.unlinkSync(destination.path+'\\'+destination.chunks[i]);
@@ -83,7 +83,6 @@ if(source.valid && destination.valid){
         fs.unlinkSync(destination.path+'\\index.html');
         fs.createReadStream(source.path+'\\index.html').pipe(fs.createWriteStream(destination.path+'\\index.html'));
     }
-
 
 }else{
     console.log(`Directory path is invalid or it doesn't met the requirements`);
