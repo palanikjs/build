@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/palanik987/build#readme",
   "dependencies": {
+    "replace": "^1.0.0",
     "yargs": "^12.0.1"
   }
 }

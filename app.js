@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const args = require('yargs').argv;
+const replace = require('replace');
 
 const getJs = (files,dirName,chunks = 10) => {
     var dir = {
@@ -44,6 +45,7 @@ const getJs = (files,dirName,chunks = 10) => {
 
 var source = getJs(fs.readdirSync(args.src),args.src,args.chunks);
 var destination = getJs(fs.readdirSync(args.dest),args.dest,args.chunks);
+
 if(source.valid && destination.valid){
 
     for (var i = 0;i<destination.chunks.length;i++){
@@ -55,13 +57,34 @@ if(source.valid && destination.valid){
         fs.unlinkSync(destination.path+'\\'+destination.compiled_js[type]);
         fs.createReadStream(source.path+'\\'+source.compiled_js[type]).pipe(fs.createWriteStream(destination.path+'\\'+source.compiled_js[type]));
     }
+
     fs.unlinkSync(destination.path+'\\'+destination.style);
     fs.createReadStream(source.path+'\\'+source.style).pipe(fs.createWriteStream(destination.path+'\\'+source.style));
+    
+    replace({
+        regex: destination.style,
+        replacement: source.style,
+        paths: [destination.path+'\\templates\\production-code.twig'],
+        recursive: true,
+        silent: true
+    });
+
+    for (var type in destination.compiled_js){
+        replace({
+            regex: destination.compiled_js[type],
+            replacement: source.compiled_js[type],
+            paths: [destination.path+'\\templates\\production-code.twig'],
+            recursive: true,
+            silent: true
+        });
+    }
 
     if(args.index =='true'){
         fs.unlinkSync(destination.path+'\\index.html');
         fs.createReadStream(source.path+'\\index.html').pipe(fs.createWriteStream(destination.path+'\\index.html'));
     }
+
+
 }else{
     console.log(`Directory path is invalid or it doesn't met the requirements`);
 }
