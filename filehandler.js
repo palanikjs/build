@@ -1,9 +1,5 @@
-const args = require('yargs').argv;
-const path = require('path');
-const fs = require('fs');
 
-
-const getJs = (files,dirname) => {
+const getJs = (files) => {
     var dir = {
         path: '',
         chunks: [],
@@ -13,7 +9,7 @@ const getJs = (files,dirname) => {
             'main': '',
             'polyfills': ''
         },
-        valid:true,
+        valid:false,
         error:'No Errors'
     };
     files.forEach((file) => {
@@ -36,21 +32,25 @@ const getJs = (files,dirname) => {
         dir.valid = false;
         dir.error = 'Unmet chunks count';
     }
-    module.exports[dirname]= dir;
+    return dir;
 };
-fs.readdir(args.dest, (err, files) => {
-    if(err){
-        console.log(`Destination path - ${args.dest} - is invalid`);
-    }else{
-        getJs(files,'destination');
-        console.log(`dest done`);
-    }
-});
-fs.readdir(args.src, (err, files) => {
-    if(err){
-        console.log(`Source path - ${args.src} - is invalid`);
-    }else{
-        getJs(files,'source');
-        console.log(`source done`);
-    }
-});
+var readJs = (path,type)=>{
+    // const files = fs.readdirSync(path);
+    // files.forEach((file)=>{
+    //     console.log(file);
+    // });
+
+    return getJs(fs.readdirSync(path));
+
+
+
+    // fs.readdir(path, (err, files) => {
+    //     if(err){
+    //         console.log(`${type} path - ${path} - is invalid`);
+    //     }else{
+    //         module.exports.type = getJs(files);
+    //         console.log(module.exports);
+    //     }
+    // });
+};
+module.exports.readJs = readJs;
