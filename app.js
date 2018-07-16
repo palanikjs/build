@@ -1,6 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 const args = require('yargs').argv;
+const readYaml = require('read-yaml');
+const writeYaml = require('write-yaml');
 const replace = require('replace');
 
 const getJs = (files, dirName, chunks = 10) => {
@@ -8,11 +10,11 @@ const getJs = (files, dirName, chunks = 10) => {
         path: path.resolve(dirName),
         chunks: [],
         compiled_files: {
-            'inline':'',
-            'vendor':'',
-            'main':'',
-            'polyfills':'',
-            'styles':''
+            'inline': '',
+            'vendor': '',
+            'main': '',
+            'polyfills': '',
+            'styles': ''
         },
         valid: true,
         error: ''
@@ -73,6 +75,28 @@ try {
 
         console.log('Build files are transferred succesfully!!!');
 
+        try {
+            var yaml = readYaml.sync(path.join(destination.path, 'sandbox.info.yml'));
+            var version = yaml.version.split('.');
+            var type = args.type == undefined ? 'patch' : args.type;
+            switch (type) {
+                case 'major':
+                    version[0] = (parseInt(version[0])+1).toString();
+                    break;
+                case 'minor':
+                    version[1] = (parseInt(version[1])+1).toString();
+                    break;
+                case 'patch':
+                    version[2] = (parseInt(version[2])+1).toString();
+                    break;
+            }
+            yaml.version = version.join('.');
+            writeYaml.sync(path.join(destination.path,'sandbox.info.yml'),yaml);
+            console.log(`version updated to ${yaml.version}`);
+        } catch (err) {
+            console.log('Invalid sandbox.info.yml file found');
+        }
+
     } else {
         var dirs = [source, destination];
         for (var dir in dirs) {
@@ -81,6 +105,6 @@ try {
             }
         }
     }
-}catch(err){
+} catch (err) {
     console.log(`please provide correct directory`);
 }
