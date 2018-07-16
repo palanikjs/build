@@ -9,3 +9,5 @@ destination folder path name
 To check for the number of chunk files generated [10 by default]
 #### --index= true/false
 To add the changes in index.html file [false by default]
+#### --type='major/minor/patch'
+Updating the theme version [patch by default]  
