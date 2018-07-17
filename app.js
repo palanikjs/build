@@ -77,8 +77,8 @@ const getJs = (files, dirName, chunks = 10) => {
 
 try {
     
-    var source = getJs(fs.readdirSync(args.src), args.src, args.chunks);
-    var destination = getJs(fs.readdirSync(args.dest), args.dest, args.chunks);
+    var source = getJs(fs.readdirSync(args.source), args.source, args.chunks);
+    var destination = getJs(fs.readdirSync(args.destination), args.destination, args.chunks);
 
     if (source.valid && destination.valid) {
         console.log(`${destination.chunks.length} - chunks found!\nTransferring files from [ ${source.path} ] to [ ${destination.path} ]`);
