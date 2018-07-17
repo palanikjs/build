@@ -16,3 +16,9 @@ $ node app.js --src='dirName' --dest='dirName' --chunks='10' --index=true --type
 |--type = 'major/minor/patch' |Updating the theme version in the info.yml file which is mandatory to check for the theme change.|optional| patch |
 |--angular-version = 'version number' |specify the angular version if the angular version is not 4 |optional| 4 |
 
+```sh
+$ node app.js --help
+```
+Use help command for more information!!
+
+மகிழ்ச்சி!!
