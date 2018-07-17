@@ -19,8 +19,7 @@ const args = require('yargs')
     })
     .option('chunks',{
         alias:'c',
-        describe:'Number of chunk files to be validated',
-        default:10
+        describe:'Number of chunk files to be validated'
     })
     .option('index',{
         alias:'i',
@@ -28,15 +27,20 @@ const args = require('yargs')
         default:false
     })
     .option('type',{
-        alias:['t','v'],
-        describe:'For version update in *.info.yml file',
+        alias:'t',
+        describe:'For theme version update in *.info.yml file',
         default:'patch'
+    })
+    .option('angular-version',{
+        alias:['a','v'],
+        describe:'Specify the angular version',
+        default:4
     })
     .help('help')
     .alias('h','help')
     .argv;
-
-const getJs = (files, dirName, chunks = 10) => {
+    
+const getJs = (files, dirName, chunks) => {
     var dir = {
         path: path.resolve(dirName),
         chunks: [],
@@ -76,12 +80,16 @@ const getJs = (files, dirName, chunks = 10) => {
 };
 
 try {
-    
+    if(args.a == 2){
+        if(args.chunks == undefined){
+            throw new Error('CHNK_ERR');
+        }
+    }
     var source = getJs(fs.readdirSync(args.source), args.source, args.chunks);
     var destination = getJs(fs.readdirSync(args.destination), args.destination, args.chunks);
 
     if (source.valid && destination.valid) {
-        console.log(`${destination.chunks.length} - chunks found!\nTransferring files from [ ${source.path} ] to [ ${destination.path} ]`);
+        console.log(`Transferring files from [ ${source.path} ] to [ ${destination.path} ].`);
         
         //copying chunk files.
         for (var i = 0; i < parseInt(args.chunks); i++) {
@@ -94,15 +102,17 @@ try {
             fs.createReadStream(path.join(source.path, source.compiled_files[type])).pipe(fs.createWriteStream(path.join(destination.path, source.compiled_files[type])));
         }
         //replacing the file names in production-code.twig.
+        var twig = args.a == 4 ? 'production-code.twig':'html.html.twig';
         for (var type in destination.compiled_files) {
             replace({
                 regex: destination.compiled_files[type],
                 replacement: source.compiled_files[type],
-                paths: [path.join(destination.path, 'templates', 'production-code.twig')],
+                paths: [path.join(destination.path, 'templates', twig)],
                 recursive: true,
                 silent: true
             });
         }
+        console.log(`File names updated in [ ${twig} ] file.`);
         //replacing the index.html file incase of any addition or deletion of cdn files.
         if (args.index == 'true') {
             fs.unlinkSync(path.join(destination.path, 'index.html'));
@@ -128,7 +138,7 @@ try {
             }
             yaml.version = version.join('.');
             writeYaml.sync(path.join(destination.path,'sandbox.info.yml'),yaml);
-            console.log(`Type - ${type} update done and version updated to ${yaml.version}`);
+            console.log(`${type} update done and version updated to ${yaml.version}`);
         } catch (err) {
             console.log('Invalid sandbox.info.yml file found');
         }
@@ -142,5 +152,9 @@ try {
         }
     }
 } catch (err) {
-    console.log(`please provide correct directory path for source and destination!`);
+    if(err.message == 'CHNK_ERR'){
+        console.log(`You've selected angular version ${args.a} - please provide chunk count for versions other than 4`);
+    }else{
+        console.log(`please provide correct directory path for source and destination!`);
+    }
 }
