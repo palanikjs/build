@@ -1,5 +1,5 @@
 # build
-This is a Node module for moving the Angular 4 compiled files to a D8 theme.
+This is a Node module for moving the Angular (2 & 4) compiled files to a D8 theme.
 
 ### Command to execute (Example command)
 ```sh
