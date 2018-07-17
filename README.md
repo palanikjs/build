@@ -14,4 +14,5 @@ $ node app.js --src='dirName' --dest='dirName' --chunks='10' --index=true --type
 | --chunks = 'number of chunks'|To check for the number of chunk files generated in both source and destination directories.|optional| 10 |
 |--index = 'true/false' |To include the changes in index.html file.|optional| false |
 |--type = 'major/minor/patch' |Updating the theme version in the info.yml file which is mandatory to check for the theme change.|optional| patch |
+|--angular-version = 'version number' |specify the angular version if the angular version is not 4 |optional| 4 |
 
