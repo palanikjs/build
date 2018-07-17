@@ -40,7 +40,7 @@ const args = require('yargs')
     .alias('h','help')
     .argv;
     
-const getJs = (files, dirName, chunks) => {
+const getJs = (files, dirName, chunks=10) => {
     var dir = {
         path: path.resolve(dirName),
         chunks: [],
@@ -113,10 +113,12 @@ try {
             });
         }
         console.log(`File names updated in [ ${twig} ] file.`);
+        
         //replacing the index.html file incase of any addition or deletion of cdn files.
         if (args.index == 'true') {
             fs.unlinkSync(path.join(destination.path, 'index.html'));
             fs.createReadStream(path.join(source.path, 'index.html')).pipe(fs.createWriteStream(path.join(destination.path, 'index.html')));
+            console.log('index.html modified');
         }
 
         console.log('Files transferred succesfully!!!');
