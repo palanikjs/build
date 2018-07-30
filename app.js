@@ -92,8 +92,9 @@ try {
         console.log(`Transferring files from [ ${source.path} ] to [ ${destination.path} ].`);
         
         //copying chunk files.
-        for (var i = 0; i < parseInt(args.chunks); i++) {
+        for (var i = 0 ; i < destination.chunks.length ; i++) {
             fs.unlinkSync(path.join(destination.path, destination.chunks[i]));
+            console.log(destination.chunks[i]+' deleted successfully');
             fs.createReadStream(path.join(source.path, source.chunks[i])).pipe(fs.createWriteStream(path.join(destination.path, source.chunks[i])));
         };
         //copying compiled files.
@@ -123,27 +124,27 @@ try {
 
         console.log('Files transferred succesfully!!!');
 
-        try {
-            var yaml = readYaml.sync(path.join(destination.path, 'sandbox.info.yml'));
-            var version = yaml.version.split('.');
-            var type = args.type == undefined ? 'patch' : args.type;
-            switch (type) {
-                case 'major':
-                    version[0] = (parseInt(version[0])+1).toString();
-                    break;
-                case 'minor':
-                    version[1] = (parseInt(version[1])+1).toString();
-                    break;
-                case 'patch':
-                    version[2] = (parseInt(version[2])+1).toString();
-                    break;
-            }
-            yaml.version = version.join('.');
-            writeYaml.sync(path.join(destination.path,'sandbox.info.yml'),yaml);
-            console.log(`${type} update done and version updated to ${yaml.version}`);
-        } catch (err) {
-            console.log('Invalid sandbox.info.yml file found');
-        }
+        // try {
+        //     var yaml = readYaml.sync(path.join(destination.path, 'sandbox.info.yml'));
+        //     var version = yaml.version.split('.');
+        //     var type = args.type == undefined ? 'patch' : args.type;
+        //     switch (type) {
+        //         case 'major':
+        //             version[0] = (parseInt(version[0])+1).toString();
+        //             break;
+        //         case 'minor':
+        //             version[1] = (parseInt(version[1])+1).toString();
+        //             break;
+        //         case 'patch':
+        //             version[2] = (parseInt(version[2])+1).toString();
+        //             break;
+        //     }
+        //     yaml.version = version.join('.');
+        //     writeYaml.sync(path.join(destination.path,'sandbox.info.yml'),yaml);
+        //     console.log(`${type} update done and version updated to ${yaml.version}`);
+        // } catch (err) {
+        //     console.log('Invalid sandbox.info.yml file found');
+        // }
 
     } else {
         var dirs = [source, destination];
